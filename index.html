@@ -255,6 +255,17 @@ body{background:var(--marble);color:var(--charcoal);font-family:'Montserrat',san
 .btn-dl{background:var(--charcoal);color:var(--cream);border:none;padding:14px 24px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .25s;display:flex;align-items:center;gap:8px;white-space:nowrap;flex-shrink:0}
 .btn-dl:hover{background:var(--neon);color:var(--charcoal);transform:translateY(-1px)}
 
+.optin-box{background:var(--charcoal);border-radius:4px;padding:40px;margin-bottom:16px;position:relative;overflow:hidden}
+.optin-box::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(198,255,61,.15) 0%,transparent 70%);pointer-events:none}
+.optin-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--neon);font-weight:700;margin-bottom:12px;display:block}
+.optin-title{font-family:'Montserrat',sans-serif;font-size:clamp(1rem,2.2vw,1.25rem);font-weight:700;color:var(--cream);line-height:1.35;margin-bottom:24px}
+.optin-fields{display:flex;flex-direction:column;gap:10px}
+.optin-input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);border-radius:4px;padding:16px 20px;color:var(--cream);font-family:'Montserrat',sans-serif;font-size:15px;transition:border-color .2s;font-weight:400;-webkit-appearance:none}
+.optin-input:focus{outline:none;border-color:var(--neon)}
+.optin-input::placeholder{color:rgba(248,246,242,.3)}
+.optin-note{font-size:12px;color:rgba(248,246,242,.3);margin-top:10px;font-style:italic;font-weight:300}
+.optin-error{font-size:13px;color:var(--ember);margin-top:10px;display:none}
+
 [data-p]{will-change:transform}
 @keyframes fU{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fI{from{opacity:0}to{opacity:1}}
@@ -316,7 +327,24 @@ body{background:var(--marble);color:var(--charcoal);font-family:'Montserrat',san
       <div class="fb-body">Every hour spent deleting posts instead of publishing, avoiding calls you know you should book, or rebuilding offers instead of selling them — <strong>that's friction, and it has a dollar value.</strong> This audit calculates yours.</div>
     </div>
     <p class="note-line">Answer honestly. Not how you wish things were — how they actually are right now.</p>
-    <button class="btn btn-dark btn-full" onclick="startAudit()">Start My Audit →</button>
+
+    <!-- Netlify Forms hidden detection form -->
+    <form name="audit-optin" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+    </form>
+
+    <div class="optin-box">
+      <span class="optin-label">Almost There</span>
+      <div class="optin-title">Enter your name and email to unlock your results.</div>
+      <div class="optin-fields">
+        <input type="text" id="optinName" class="optin-input" placeholder="First name" autocomplete="given-name" />
+        <input type="email" id="optinEmail" class="optin-input" placeholder="Email address" autocomplete="email" />
+        <div class="optin-error" id="optinError">Please enter your name and a valid email to continue.</div>
+        <button class="btn btn-neon btn-full" onclick="submitOptin()" style="margin-top:6px">Start My Audit →</button>
+      </div>
+      <p class="optin-note">No spam. Ever. Just your results and the occasional email worth reading.</p>
+    </div>
   </div>
 
   <div class="progress-wrap" id="progressWrap">
@@ -356,7 +384,29 @@ const questions=[
   {id:'honest',type:'text',text:'Finish this sentence honestly:',sub:'"The thing I\'d never say out loud about why I\'m stuck is..."',placeholder:'Write whatever comes up first. This is your audit — no one else is reading this.'}
 ];
 
-let current=0,answers={};
+let current=0,answers={},userName='';
+
+function submitOptin(){
+  const name=document.getElementById('optinName').value.trim();
+  const email=document.getElementById('optinEmail').value.trim();
+  const emailValid=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!name||!emailValid){
+    document.getElementById('optinError').style.display='block';
+    return;
+  }
+  userName=name;
+
+  // Submit to Netlify Forms in background
+  const formData=new FormData();
+  formData.append('form-name','audit-optin');
+  formData.append('name',name);
+  formData.append('email',email);
+  fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams(formData).toString()
+  }).catch(()=>{}); // silent fail — don't block the audit
+
+  startAudit();
+}
 
 function startAudit(){
   document.getElementById('intro').style.display='none';
@@ -402,6 +452,7 @@ async function submitAudit(){
   document.getElementById('questionArea').style.display='none';
   document.getElementById('progressWrap').style.display='none';
   document.getElementById('loading').classList.add('visible');
+  document.querySelector('.loading-title').textContent = userName ? `Running your diagnosis, ${userName}.` : 'Running your diagnosis.';
   window.scrollTo({top:0,behavior:'smooth'});
 
   const rMap=['Under $3k/month','$3k–$6k/month','$6k–$10k/month','$10k–$15k/month','$15k+/month'];
@@ -815,7 +866,7 @@ function showResults(r,d){
           <li>Hypnosis Vault + monthly live sessions</li>
           <li>Community of women off the brakes</li>
         </ul>
-        <button class="btn btn-neon cta-card-btn" style="font-size:13px;padding:18px" onclick="window.open('https://rewireandregulate.com/','_blank')">Join the Membership →</button>
+        <button class="btn btn-neon cta-card-btn" style="font-size:13px;padding:18px" onclick="window.open('https://www.skool.com/rewired-and-regulated','_blank')">Join the Membership →</button>
         <span class="cta-card-note">Start your Rx on day one.</span>
       </div>
     </div>
@@ -850,7 +901,7 @@ function showResults(r,d){
 }
 
 function copyShareText(archetype, tax){
-  const text=`I just did the Revenue Leak Audit from Rewired & Regulated and found out I'm ${archetype}. My Friction Tax is ${tax}/month — the estimated monthly gap between where I am and where my nervous system has been holding me. Take yours → skool.com/rewired`;
+  const text=`I just did the Revenue Leak Audit from Rewired & Regulated and found out I'm ${archetype}. My Friction Tax is ${tax}/month — the estimated monthly gap between where I am and where my nervous system has been holding me. Take yours → skool.com/rewired-and-regulated`;
   navigator.clipboard.writeText(text).then(()=>{
     const btn=document.querySelector('.btn-share');
     if(!btn)return;
@@ -997,7 +1048,7 @@ body{font-family:'Montserrat',sans-serif;background:#F8F6F2;color:#0A0A08;font-s
   <div class="cta-box">
     <span class="cta-lbl">What Comes Next</span>
     <div class="cta-t">Your Rewire Rx™ is waiting.</div>
-    <div class="cta-b">The Rewired &amp; Regulated Membership is where this work actually happens. On day one you get your custom Rewire Rx™ — a protocol built from your audit results. Plus: The Daily Tap (30+ EFT sessions), Sleep Sync Series, Money Block Removal Series, Hypnosis Vault, monthly live sessions, and a community of women off the brakes.<br><br>skool.com/rewired</div>
+    <div class="cta-b">The Rewired &amp; Regulated Membership is where this work actually happens. On day one you get your custom Rewire Rx™ — a protocol built from your audit results. Plus: The Daily Tap (30+ EFT sessions), Sleep Sync Series, Money Block Removal Series, Hypnosis Vault, monthly live sessions, and a community of women off the brakes.<br><br>skool.com/rewired-and-regulated</div>
   </div>
 </div>
 
