@@ -329,7 +329,7 @@ body{background:var(--marble);color:var(--charcoal);font-family:'Montserrat',san
     <p class="note-line">Answer honestly. Not how you wish things were — how they actually are right now.</p>
 
     <!-- Netlify Forms hidden detection form -->
-    <form name="audit-optin" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <form name="opt-in" netlify data-netlify="true" netlify-honeypot="bot-field" hidden>
       <input type="text" name="name" />
       <input type="email" name="email" />
     </form>
@@ -398,7 +398,7 @@ function submitOptin(){
 
   // Submit to Netlify Forms in background
   const formData=new FormData();
-  formData.append('form-name','audit-optin');
+  formData.append('form-name','opt-in');
   formData.append('name',name);
   formData.append('email',email);
   fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
