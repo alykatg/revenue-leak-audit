@@ -373,7 +373,7 @@ body{background:var(--marble);color:var(--charcoal);font-family:'Montserrat',san
 
 <script>
 const questions=[
-  {id:'revenue',type:'options',text:'Where has your revenue been sitting for the past 12+ months?',sub:'Not your best month — where it lives most of the time.',options:['Under $3k/month — still finding footing','$3k–$6k/month — proof of concept but stalled','$6k–$10k/month — I can see six figures but can\'t touch it','$10k–$15k/month — I\'ve hit it but can\'t hold it consistently','$15k+/month — I\'m here but it costs me everything to stay']},
+  {id:'revenue',type:'options',text:'Where has your revenue been sitting for the past 12+ months?',sub:'Not your best month — where it lives most of the time.',options:['Under $3k/month — still finding footing','$3k–$6k/month — proof of concept but stalled','$6k–$10k/month — I can see six figures but can\'t touch it','$10k–$15k/month — I\'ve hit it but can\'t hold it consistently','$15k-$30k/month — I\'m here but it costs me everything to stay','$30k+/month — I\'ve hit real scale but the ceiling is invisible']},
   {id:'plateau_time',type:'options',text:'How long have you been at roughly the same level?',sub:'Not intentional pauses — the unintentional kind.',options:['3–6 months — recent but I feel it','6–12 months — I\'ve been explaining it away','12–18 months — running out of explanations','18+ months — this has become my normal and I hate it']},
   {id:'biggest_drain',type:'options',text:'Where does most of your energy actually go?',sub:'The thing that eats your hours without moving the needle.',options:['Perfecting content I never actually post','Rebuilding my offer instead of selling the one I have','Overthinking messaging, pricing, or positioning','Avoiding sales conversations I know I should be having','Admin and delivery — no capacity left for growth']},
   {id:'tuesday',type:'options',text:'It\'s 2pm on a Tuesday. You\'re supposed to be working. What\'s actually happening?',sub:'The honest answer. Not the aspirational one.',options:['Switching between tasks, nothing getting finished','Refreshing Instagram or checking Stripe out of anxiety','Starting something new instead of finishing what\'s open','Doing busy work that feels productive but isn\'t','Staring at a blank screen wondering what\'s wrong with me']},
@@ -455,7 +455,7 @@ async function submitAudit(){
   document.querySelector('.loading-title').textContent = userName ? `Running your diagnosis, ${userName}.` : 'Running your diagnosis.';
   window.scrollTo({top:0,behavior:'smooth'});
 
-  const rMap=['Under $3k/month','$3k–$6k/month','$6k–$10k/month','$10k–$15k/month','$15k+/month'];
+  const rMap=['Under $3k/month','$3k–$6k/month','$6k–$10k/month','$10k–$15k/month','$15k-$30k/month','$30k+/month'];
   const pMap=['3–6 months','6–12 months','12–18 months','18+ months'];
   const dMap=['Perfecting content never posted','Rebuilding offer instead of selling it','Overthinking messaging and pricing','Avoiding sales conversations','Admin with no growth capacity'];
   const tMap=['Switching between tasks','Refreshing Instagram or checking Stripe anxiously','Starting new things instead of finishing','Doing busy work that isn\'t needle-moving','Staring at blank screen'];
